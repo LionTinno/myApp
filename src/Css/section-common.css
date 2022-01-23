@@ -1,0 +1,152 @@
+.section__weight {
+  position: relative;
+  width: 18vw;
+  height: 100vh;
+  margin-top: 10px;
+}
+
+.weight__header {
+  position: relative;
+  background-color: whitesmoke;
+  text-align: center;
+}
+
+.weight__header span {
+  color: #1c57a4;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.weight__setting {
+  position: relative;
+  margin-top: 10px;
+  background-color: white;
+  box-shadow: 5px 10px 18px #c5c5c5;
+  border-radius: 15px;
+  height: auto;
+  padding-bottom: 10px;
+}
+
+.weight__setting .setting-title,
+.weight__setting .candidate-title {
+  color: #999999;
+  font-size: 8px;
+  padding-top: 10px;
+  margin-left: 15px;
+  font-weight: 500;
+}
+
+.weight__setting table {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 80%;
+}
+
+.setting-detail table {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 80%;
+}
+
+.detail-weightsummary {
+  position: relative;
+  left: 50%;
+  width: 180px;
+  padding: 5px 10px;
+  background-color: #eef5ff;
+  text-align: center;
+  transform: translateX(-50%);
+  border-radius: 40px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.detail-weightsummary table td {
+  font-size: 10px;
+  font-weight: 500;
+  color: #1c57a4 !important;
+}
+
+.detail-weightsummary table td:first-child {
+  width: 120px;
+}
+
+.detail-weight {
+  min-height: 120px;
+}
+
+.setting-candidate {
+  position: relative;
+  min-height: 350px;
+}
+
+.candidate__box:hover,
+.candidate__box-summary:hover {
+  cursor: pointer;
+}
+
+.candidate__box {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  height: 60px;
+  border: 1px solid #bababa;
+  box-sizing: border-box;
+  border-radius: 8.0649px;
+
+  margin-top: 5px;
+}
+
+.candidate__box-image {
+  position: relative;
+  display: inline-block;
+  width: 35%;
+  min-width: 35%;
+  height: 100%;
+}
+
+.candidate__box-image img {
+  width: 40px;
+  height: 40px;
+}
+
+.candidate__box-detail {
+  position: relative;
+  display: inline-block;
+  width: 65%;
+  height: 100%;
+}
+
+.candidate__box-image img,
+.candidate__box-detail table {
+  position: relative;
+  display: block;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.candidate__box-detail table tr:first-child td {
+  width: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  color: black;
+}
+
+.candidate__box-detail table tr:not(:first-child) td {
+  font-size: 10px;
+  font-weight: 500;
+  color: black;
+}
+
+.candidate__box-detail table tr:not(:first-child) td:not(:first-child) {
+  font-size: 10px;
+  font-weight: bold;
+  color: #1c57a4;
+  text-align: right;
+}

@@ -1,0 +1,49 @@
+.section_summary {
+  position: relative;
+  width: 18vw;
+  height: 100vh;
+  margin-top: 10px;
+}
+
+.section_summary-header {
+  position: relative;
+  left: 20px;
+}
+
+.section__summary-candidate {
+  position: relative;
+}
+
+.section_summary-header span {
+  color: #1c57a4;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.section_summary-setting {
+  position: relative;
+  margin-top: 10px;
+  height: auto;
+  padding-bottom: 10px;
+}
+
+.candidate__box-summary {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  height: 60px;
+  box-sizing: border-box;
+  background-color: white;
+  border-radius: 8.0649px;
+
+  margin-top: 15px;
+}
+
+.summary-line {
+  position: relative;
+  left: 0;
+  width: 150px;
+  border: 2px solid rgba(56, 33, 191, 0.62);
+  border-radius: 12px;
+}

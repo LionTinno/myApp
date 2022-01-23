@@ -1,0 +1,63 @@
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY {
+  globalAuthRule: AuthRule = {allow: public}
+} # FOR TESTING ONLY!
+type Todo @model {
+  id: ID!
+  name: String!
+  description: String
+}
+
+type Profile @model {
+  id: ID!
+  name: String!
+  detail: Detail
+  tw: [Int]
+  ci: [Int]
+  js: [Int]
+  pl: [Int]
+  result: Float
+  performance: [Performance]
+  esdata: [Int]
+  eltvdata: ELTVData
+  iqeq: Float
+  eltv: Float
+  iq: [Int]
+  description: String
+  eq: [Int]
+  type: String
+  typeimgurl: String
+  imgurl: String
+  predictionscore: String
+  mbti: MBTI
+  total_score: Float
+  mbtigraph: Float
+  matching: Int
+}
+
+type Detail {
+  resignprediction: String!
+  service: String!
+  cost: Int!
+}
+
+type Performance {
+  topic: String!
+  value: String!
+}
+
+type ELTVData {
+  data: [Int]!
+  labels: [String]!
+}
+
+type MBTI {
+  teamchart: [Float]!
+  deptchart: [Float]!
+  total: Float!
+  type: String!
+  chart: [Float]!
+  before: [Float]!
+  after: [Float]!
+}

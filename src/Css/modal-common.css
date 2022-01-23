@@ -1,0 +1,48 @@
+.ReactModal__Overlay--after-open {
+  background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+#barchartSensitivity {
+  position: absolute;
+  top: 320px;
+  left: 10px;
+  width: 370px;
+  height: auto;
+  padding: 10px 15px;
+  border: 1px solid #e5e5e5;
+  text-align: center;
+}
+
+.example__header span,
+.chart__header span {
+  position: relative;
+  left: 0;
+  color: #1c57a4;
+  font-weight: 500;
+}
+
+.example__header .icon-close,
+.chart__header .icon-close {
+  position: absolute;
+  top: 25px;
+  right: 40px;
+}
+
+.example__header .icon-close:hover,
+.chart__header .icon-close:hover {
+  cursor: pointer;
+}
+
+.example__body {
+  text-align: center;
+}
+
+.chart__profile {
+  position: relative;
+  width: 200px;
+}
+
+.chart__detail {
+  position: relative;
+  width: 600px;
+}
