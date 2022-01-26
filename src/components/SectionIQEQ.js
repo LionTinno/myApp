@@ -10,11 +10,6 @@ import EQChart from './EQChart';
 import EQBarChart from './EQBarChart';
 import SensitivityBarChart from './SensitivityBarChart';
 
-import Amplify, {API, graphqlOperation} from 'aws-amplify';
-import awsExports from '../aws-exports';
-import {listProfiles} from '../graphql/queries';
-Amplify.configure(awsExports);
-
 function SectionIQEQ(props) {
   const customStyles = {
     content: {
@@ -45,27 +40,21 @@ function SectionIQEQ(props) {
 
   const examplefilename = 'example-iqeq.jpg';
 
-  const [candidateList, setCandidateList] = useState([]);
-
-  useEffect(() => {
-    fetchTodo();
-  }, []);
-
-  const fetchTodo = async () => {
-    try {
-      const todoData = await API.graphql(graphqlOperation(listProfiles));
-      const todoList = todoData.data.listProfiles.items;
-      setCandidateList(todoList);
-    } catch (error) {
-      console.log('error message', error);
-    }
-  };
-
   const [iqeq_value, setValue] = useState(0);
   const handleChange = event => {
     if (validateWeightFormat(event)) {
-      setValue(event.target.value);
-      calcuateTotal(event.target.value);
+      var sum =
+        Number.parseInt(event.target.value == '' ? 0 : event.target.value) +
+        props.weight.esweight +
+        props.weight.eltvweight +
+        props.weight.mbtiweight;
+      if (sum <= 100) {
+        setValue(event.target.value == '' ? 0 : event.target.value);
+        calcuateTotal(event.target.value == '' ? 0 : event.target.value);
+        props.weight.iqeqweight = Number.parseInt(
+          event.target.value == '' ? 0 : event.target.value,
+        );
+      }
     }
   };
 
@@ -288,11 +277,13 @@ function SectionIQEQ(props) {
   }
 
   function calcuateTotal(w1) {
-    candidateList.forEach(element => {
+    props.candidateList.forEach(element => {
       element.iqeq =
         w1 *
         (-4.76856 + 0.02548 * element.iq[0] + (0.01583 * element.eq[0]) / 1);
     });
+
+    props.childToParent3(props.candidateList);
   }
 
   return (
@@ -343,7 +334,10 @@ function SectionIQEQ(props) {
           <div id="barchartSensitivity">
             <span className="chart-title">Talent Prediction Score</span>
             <br />
-            <SensitivityBarChart name={itemModal.name} test={candidateList} />
+            <SensitivityBarChart
+              name={itemModal.name}
+              test={props.candidateList}
+            />
           </div>
         </div>
       </Modal>
@@ -438,7 +432,7 @@ function SectionIQEQ(props) {
         <div className="section__group-candidate">
           <p className="setting_title">Candidate Performance</p>
 
-          {candidateList
+          {props.candidateList
             .sort((a, b) => {
               if (a['iqeq'] < b['iqeq']) {
                 return 1;

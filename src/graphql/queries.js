@@ -75,6 +75,10 @@ export const getProfile = /* GraphQL */ `
       total_score
       mbtigraph
       matching
+      actualeltv
+      lifeyear
+      growthrate
+      discountrate
       createdAt
       updatedAt
     }
@@ -130,6 +134,10 @@ export const listProfiles = /* GraphQL */ `
         total_score
         mbtigraph
         matching
+        actualeltv
+        lifeyear
+        growthrate
+        discountrate
         createdAt
         updatedAt
       }

@@ -1,15 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import Modal from 'react-modal';
 
 import iconInfo from '../assets/images/icon-info.png';
 import iconClose from '../assets/images/icon-close.png';
 
 import ELTVLineChart from './ELTVLineChart';
-
-import Amplify, {API, graphqlOperation} from 'aws-amplify';
-import awsExports from '../aws-exports';
-import {listProfiles} from '../graphql/queries';
-Amplify.configure(awsExports);
 
 function SectionELTV(props) {
   const BASES3URL =
@@ -29,24 +24,42 @@ function SectionELTV(props) {
     },
   };
 
-  const [candidateList, setCandidateList] = useState([]);
+  function calculateTotal(w1) {
+    var maxActualEltv = 0;
 
-  useEffect(() => {
-    fetchTodo();
-  }, []);
+    props.candidateList.forEach(element => {
+      if (maxActualEltv < element.actualeltv) {
+        maxActualEltv = element.actualeltv;
+      }
+    });
 
-  const fetchTodo = async () => {
-    try {
-      const todoData = await API.graphql(graphqlOperation(listProfiles));
-      const todoList = todoData.data.listProfiles.items;
-      setCandidateList(todoList);
-    } catch (error) {
-      console.log('error message', error);
-    }
-  };
+    props.candidateList.forEach(element => {
+      element.eltv =
+        w1 *
+        (Number.parseFloat(element.actualeltv) /
+          Number.parseFloat(maxActualEltv));
+    });
+
+    props.childToParent2(props.candidateList);
+  }
 
   const [eltv_value, setValue] = useState(0);
-  const handleChange = e => setValue(e.target.value);
+  const handleChange = event => {
+    if (validateWeightFormat(event)) {
+      var sum =
+        Number.parseInt(event.target.value == '' ? 0 : event.target.value) +
+        props.weight.esweight +
+        props.weight.iqeqweight +
+        props.weight.mbtiweight;
+      if (sum <= 100) {
+        setValue(event.target.value == '' ? 0 : event.target.value);
+        calculateTotal(event.target.value);
+        props.weight.eltvweight = Number.parseInt(
+          event.target.value == '' ? 0 : event.target.value,
+        );
+      }
+    }
+  };
 
   const [valueGrowthRate, setValueGrowthRate] = useState(5);
   const GrowthRateChange = event => {
@@ -62,7 +75,7 @@ function SectionELTV(props) {
     }
   };
 
-  const [valueLifeSpan, setValueLifeSpan] = useState(8);
+  const [valueLifeSpan, setValueLifeSpan] = useState(0);
   const LifeSpanChange = event => {
     if (validateWeightFormat(event)) {
       setValueLifeSpan(event.target.value);
@@ -92,9 +105,9 @@ function SectionELTV(props) {
     setBarChartIsOpen(true);
     setItemModal(item);
 
-    setValueGrowthRate(5);
-    setValueDiscountRate(5);
-    setValueLifeSpan(8);
+    setValueGrowthRate(item.growthrate);
+    setValueDiscountRate(item.discountrate);
+    setValueLifeSpan(item.lifeyear);
 
     calculateLifeSpan(item);
   }
@@ -132,6 +145,42 @@ function SectionELTV(props) {
   }
 
   function calculateLifeSpan(item) {
+    console.log(valueLifeSpan);
+    var finalRate = item.discountrate - item.growthrate;
+
+    var lastYear = item.eltvdata.labels.at(-1);
+    var calYearList = [];
+
+    for (let index = 0; index < item.eltvdata.labels.length; index++) {
+      calYearList.push(item.eltvdata.labels[index]);
+    }
+
+    var lastCost = item.eltvdata.data.at(-1);
+    var calCostList = [];
+
+    for (let index = 0; index < item.eltvdata.data.length; index++) {
+      calCostList.push(item.eltvdata.data[index]);
+    }
+
+    for (let index = 0; index < item.lifeyear - 1; index++) {
+      var calCost = lastCost + lastCost * (finalRate / 100);
+      lastCost = calCost;
+      calCostList.push(calCost);
+
+      var calYear = Number.parseInt(lastYear) + 1;
+      lastYear = calYear;
+      calYearList.push(calYear);
+    }
+
+    calYearList.push(Number.parseInt(calYearList.at(-1)) + 1);
+    calCostList.push(0);
+
+    setBarChart(calYearList, calCostList);
+    ELTVCalucateActual(item.id, calCostList);
+  }
+
+  function calculateLifeSpan2(item) {
+    console.log(valueLifeSpan);
     var finalRate = valueDiscountRate - valueGrowthRate;
 
     var lastYear = item.eltvdata.labels.at(-1);
@@ -162,6 +211,32 @@ function SectionELTV(props) {
     calCostList.push(0);
 
     setBarChart(calYearList, calCostList);
+    ELTVCalucateActual(item.id, calCostList);
+  }
+
+  function ELTVCalucateActual(profileId, calCostList) {
+    var sum = 0;
+
+    for (let index = 0; index < calCostList.length; index++) {
+      const element = calCostList[index];
+      const elementNext = calCostList[index + 1];
+      sum += (Number.parseFloat(element) + Number.parseFloat(elementNext)) / 2;
+
+      if (index + 1 == calCostList.length - 1) {
+        break;
+      }
+    }
+
+    props.candidateList.forEach(element => {
+      if (profileId == element.id) {
+        element.actualeltv = sum;
+        element.growthrate = valueGrowthRate;
+        element.discountrate = valueDiscountRate;
+        element.lifeyear = valueLifeSpan;
+      }
+    });
+
+    calculateTotal(eltv_value);
   }
 
   return (
@@ -246,7 +321,7 @@ function SectionELTV(props) {
                     id="finishButton"
                     className="btn btn-compare"
                     value={'Finish'}
-                    onClick={() => calculateLifeSpan(itemModal)}
+                    onClick={() => calculateLifeSpan2(itemModal)}
                   />
                 </td>
               </tr>
@@ -343,7 +418,7 @@ function SectionELTV(props) {
         <div className="section__group-candidate">
           <p className="setting_title">Candidate Performance</p>
 
-          {candidateList
+          {props.candidateList
             .sort((a, b) => {
               if (a['eltv'] < b['eltv']) {
                 return 1;

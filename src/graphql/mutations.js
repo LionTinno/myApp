@@ -91,6 +91,10 @@ export const createProfile = /* GraphQL */ `
       total_score
       mbtigraph
       matching
+      actualeltv
+      lifeyear
+      growthrate
+      discountrate
       createdAt
       updatedAt
     }
@@ -144,6 +148,10 @@ export const updateProfile = /* GraphQL */ `
       total_score
       mbtigraph
       matching
+      actualeltv
+      lifeyear
+      growthrate
+      discountrate
       createdAt
       updatedAt
     }
@@ -197,6 +205,10 @@ export const deleteProfile = /* GraphQL */ `
       total_score
       mbtigraph
       matching
+      actualeltv
+      lifeyear
+      growthrate
+      discountrate
       createdAt
       updatedAt
     }

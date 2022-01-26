@@ -7,11 +7,6 @@ import iconClose from '../assets/images/icon-close.png';
 import RadarChart from './RadarChart';
 import RadarMBTIChart from './RadarMBTIChart';
 
-import Amplify, {API, graphqlOperation} from 'aws-amplify';
-import awsExports from '../aws-exports';
-import {listProfiles} from '../graphql/queries';
-Amplify.configure(awsExports);
-
 function SectionMBTI(props) {
   Modal.setAppElement('#root');
 
@@ -57,35 +52,47 @@ function SectionMBTI(props) {
   const examplefilename = 'example-mbti.jpg';
   const _ISSHOWEXAMPLE = true;
 
-  const [candidateList, setCandidateList] = useState([]);
-
-  useEffect(() => {
-    fetchTodo();
-  }, []);
-
-  const fetchTodo = async () => {
-    try {
-      const todoData = await API.graphql(graphqlOperation(listProfiles));
-      const todoList = todoData.data.listProfiles.items;
-      setCandidateList(todoList);
-    } catch (error) {
-      console.log('error message', error);
-    }
-  };
-
   const [tb_value, setTB] = useState(0);
   const tbChange = event => {
     if (validateWeightFormat(event)) {
-      setTB(event.target.value);
-      calcuateTotal(event.target.value, pmt_value);
+      var sum =
+        Number.parseInt(event.target.value == '' ? 0 : event.target.value) +
+        Number.parseInt(pmt_value) +
+        props.weight.eltvweight +
+        props.weight.iqeqweight +
+        props.weight.esweight;
+      if (sum <= 100) {
+        setTB(event.target.value == '' ? 0 : event.target.value);
+        calcuateTotal(
+          event.target.value == '' ? 0 : event.target.value,
+          pmt_value,
+        );
+        props.weight.mbtiweight =
+          Number.parseInt(event.target.value == '' ? 0 : event.target.value) +
+          Number.parseInt(pmt_value);
+      }
     }
   };
 
   const [pmt_value, setPMT] = useState(0);
   const pmtChange = event => {
     if (validateWeightFormat(event)) {
-      setPMT(event.target.value);
-      calcuateTotal(tb_value, event.target.value);
+      var sum =
+        Number.parseInt(event.target.value == '' ? 0 : event.target.value) +
+        Number.parseInt(tb_value) +
+        props.weight.eltvweight +
+        props.weight.iqeqweight +
+        props.weight.esweight;
+      if (sum <= 100) {
+        setPMT(event.target.value == '' ? 0 : event.target.value);
+        calcuateTotal(
+          tb_value,
+          event.target.value == '' ? 0 : event.target.value,
+        );
+        props.weight.mbtiweight =
+          Number.parseInt(event.target.value == '' ? 0 : event.target.value) +
+          Number.parseInt(tb_value);
+      }
     }
   };
 
@@ -367,10 +374,12 @@ function SectionMBTI(props) {
   }
 
   function calcuateTotal(w1, w2) {
-    candidateList.forEach(element => {
+    props.candidateList.forEach(element => {
       element.mbti.total =
         w1 * (1 - element.mbtigraph / 400) + w2 * (element.matching / 5);
     });
+
+    props.childToParent4(props.candidateList);
   }
 
   return (
@@ -413,7 +422,7 @@ function SectionMBTI(props) {
         </div>
         <hr />
         <div className="modal__detail-cadidate">
-          {candidateList
+          {props.candidateList
             .sort((a, b) => {
               if (a.mbti['total'] < b.mbti['total']) {
                 return 1;
@@ -666,7 +675,7 @@ function SectionMBTI(props) {
         <div className="section__group-candidate">
           <p className="setting_title">Candidate Performance</p>
 
-          {candidateList
+          {props.candidateList
             .sort((a, b) => {
               if (a.mbti['total'] < b.mbti['total']) {
                 return 1;

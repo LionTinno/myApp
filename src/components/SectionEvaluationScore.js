@@ -6,12 +6,6 @@ import sourceIconClose from '../assets/images/icon-close.png';
 
 import BarChartEvaluationScore from './BarChartEvaluationScore';
 
-import Amplify, {API, graphqlOperation} from 'aws-amplify';
-import awsExports from '../aws-exports';
-import {listProfiles} from '../graphql/queries';
-
-Amplify.configure(awsExports);
-
 function SectionEvaluationScore(props) {
   //Const Variables.
   const _BASEAWSS3URL =
@@ -31,43 +25,82 @@ function SectionEvaluationScore(props) {
     },
   };
 
-  const [candidateList, setCandidateList] = useState([]);
-
-  useEffect(() => {
-    fetchTodo();
-  }, []);
-
-  const fetchTodo = async () => {
-    try {
-      const todoData = await API.graphql(graphqlOperation(listProfiles));
-      const todoList = todoData.data.listProfiles.items;
-      setCandidateList(todoList);
-    } catch (error) {
-      console.log('error message', error);
-    }
-  };
+  const data = 'This is data from Child Component to the Parent Component.';
 
   //Setup Stages.
   const [valueWeight1, setValueWeight1] = useState(0);
   const weight1Change = event => {
     if (validateWeightFormat(event)) {
-      setValueWeight1(event.target.value);
-      calcuateTotal(event.target.value, valueWeight2, valueWeight3);
+      var sum =
+        Number.parseInt(valueWeight2) +
+        Number.parseInt(valueWeight3) +
+        Number.parseInt(event.target.value == '' ? 0 : event.target.value) +
+        props.weight.eltvweight +
+        props.weight.iqeqweight +
+        props.weight.mbtiweight;
+
+      props.weight.esweight;
+      if (sum <= 100) {
+        setValueWeight1(event.target.value == '' ? 0 : event.target.value);
+        calcuateTotal(
+          event.target.value == '' ? 0 : event.target.value,
+          valueWeight2,
+          valueWeight3,
+        );
+        props.weight.esweight =
+          Number.parseInt(valueWeight3) +
+          Number.parseInt(valueWeight2) +
+          Number.parseInt(event.target.value == '' ? 0 : event.target.value);
+      }
     }
   };
   const [valueWeight2, setValueWeight2] = useState(0);
   const weight2Change = event => {
     if (validateWeightFormat(event)) {
-      setValueWeight2(event.target.value);
-      calcuateTotal(valueWeight1, event.target.value, valueWeight3);
+      var sum =
+        Number.parseInt(valueWeight1) +
+        Number.parseInt(valueWeight3) +
+        Number.parseInt(event.target.value == '' ? 0 : event.target.value) +
+        props.weight.eltvweight +
+        props.weight.iqeqweight +
+        props.weight.mbtiweight;
+      if (sum <= 100) {
+        setValueWeight2(event.target.value == '' ? 0 : event.target.value);
+        calcuateTotal(
+          valueWeight1,
+          event.target.value == '' ? 0 : event.target.value,
+          valueWeight3,
+        );
+        props.weight.esweight =
+          Number.parseInt(valueWeight1) +
+          Number.parseInt(valueWeight3) +
+          Number.parseInt(event.target.value == '' ? 0 : event.target.value);
+      }
     }
   };
 
   const [valueWeight3, setValueWeight3] = useState(0);
   const weight3Change = event => {
     if (validateWeightFormat(event)) {
-      setValueWeight3(event.target.value);
-      calcuateTotal(valueWeight1, valueWeight2, event.target.value);
+      var sum =
+        Number.parseInt(valueWeight1) +
+        Number.parseInt(valueWeight2) +
+        Number.parseInt(event.target.value == '' ? 0 : event.target.value) +
+        props.weight.eltvweight +
+        props.weight.iqeqweight +
+        props.weight.mbtiweight;
+      if (sum <= 100) {
+        setValueWeight3(event.target.value == '' ? 0 : event.target.value);
+        calcuateTotal(
+          valueWeight1,
+          valueWeight2,
+          event.target.value == '' ? 0 : event.target.value,
+        );
+        props.weight.esweight =
+          Number.parseInt(valueWeight1) +
+          Number.parseInt(valueWeight2) +
+          Number.parseInt(event.target.value == '' ? 0 : event.target.value);
+      }
     }
   };
 
@@ -146,12 +179,14 @@ function SectionEvaluationScore(props) {
   }
 
   function calcuateTotal(w1, w2, w3) {
-    candidateList.forEach(element => {
+    props.candidateList.forEach(element => {
       element.total_score =
         w1 * (element.esdata[0] / 100) +
         w2 * (element.esdata[1] / 100) +
         w3 * (element.esdata[2] / 100);
     });
+
+    props.childToParent(props.candidateList);
   }
 
   return (
@@ -344,7 +379,7 @@ function SectionEvaluationScore(props) {
         <div className="setting-candidate">
           <p className="candidate-title">Candidate Performance</p>
 
-          {candidateList
+          {props.candidateList
             .sort((a, b) => {
               if (a['total_score'] < b['total_score']) {
                 return 1;
@@ -371,9 +406,6 @@ function SectionEvaluationScore(props) {
                         <tr>
                           <td>Total Score :</td>
                           <td>
-                            {/* {Number.parseFloat(
-                              calcuateTotal(item.esdata),
-                            ).toFixed(2)} */}
                             {Number.parseFloat(item.total_score).toFixed(2)}
                           </td>
                         </tr>

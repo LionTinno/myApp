@@ -43,6 +43,15 @@ function SummaryDoughtChart(props) {
     <div>
       <p style={{fontSize: '8px', fontWeight: 'bold'}}>{props.title}</p>
       <Doughnut data={props.data} options={config} />
+      <div style={{fontSize: '7px', fontWeight: '500', float: 'left'}}>
+        <p>Department</p>
+        <p>{props.department}</p>
+      </div>
+
+      <div style={{fontSize: '7px', fontWeight: '500', float: 'right'}}>
+        <p>Overall</p>
+        <p>{props.overall}</p>
+      </div>
     </div>
   );
 }

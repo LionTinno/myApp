@@ -4,14 +4,9 @@ import Modal from 'react-modal';
 import iconClose from '../assets/images/icon-close.png';
 import SummaryDoughtChart from './SummaryDoughtChart';
 
-import Amplify, {API, graphqlOperation} from 'aws-amplify';
-import awsExports from '../aws-exports';
-import {listProfiles} from '../graphql/queries';
-Amplify.configure(awsExports);
-
 var headerTitle = 'Summary result';
 
-function SectionSummary() {
+function SectionSummary(props) {
   const customStyles = {
     content: {
       top: '50%',
@@ -27,22 +22,6 @@ function SectionSummary() {
   const _BASEAWSS3URL =
     'https://fordstorage20220103.s3.ap-southeast-1.amazonaws.com/';
 
-  const [candidateList, setCandidateList] = useState([]);
-
-  useEffect(() => {
-    fetchTodo();
-  }, []);
-
-  const fetchTodo = async () => {
-    try {
-      const todoData = await API.graphql(graphqlOperation(listProfiles));
-      const todoList = todoData.data.listProfiles.items;
-      setCandidateList(todoList);
-    } catch (error) {
-      console.log('error message', error);
-    }
-  };
-
   const [isOpenSummaryChartModal, setIsOpenSummaryChartModal] =
     React.useState(false);
   const [itemModal, setItemModal] = React.useState('');
@@ -55,6 +34,8 @@ function SectionSummary() {
   const [datasetCI, setDataSetCI] = React.useState('');
   const [datasetPL, setDataSetPL] = React.useState('');
   const [datasetTW, setDataSetTW] = React.useState('');
+
+  const [refeashState, setRefeashState] = useState(false);
 
   function openSummaryChartModal(item, performace) {
     setIsOpenSummaryChartModal(true);
@@ -130,6 +111,8 @@ function SectionSummary() {
   function closeSummaryChartModal() {
     setIsOpenSummaryChartModal(false);
   }
+
+  const [candidateList, setCandidateList] = React.useState(props.candidateList);
 
   return (
     <div className="section_summary">
@@ -270,19 +253,33 @@ function SectionSummary() {
                 <SummaryDoughtChart
                   title={'Job Satisfaction Index'}
                   data={datasetJS}
+                  department={'78'}
+                  overall={'69'}
                 />
               </div>
               <div className="chart__summary">
-                <SummaryDoughtChart title={'Culture Index'} data={datasetCI} />
+                <SummaryDoughtChart
+                  title={'Culture Index'}
+                  data={datasetCI}
+                  department={'84'}
+                  overall={'74'}
+                />
               </div>
               <div className="chart__summary">
                 <SummaryDoughtChart
                   title={'People Leader Index'}
                   data={datasetPL}
+                  department={'80'}
+                  overall={'80'}
                 />
               </div>
               <div className="chart__summary">
-                <SummaryDoughtChart title={'Teamwork Index'} data={datasetTW} />
+                <SummaryDoughtChart
+                  title={'Teamwork Index'}
+                  data={datasetTW}
+                  department={'80'}
+                  overall={'69'}
+                />
               </div>
             </div>
           </div>

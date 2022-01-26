@@ -150,3 +150,13 @@
   color: #1c57a4;
   text-align: right;
 }
+
+.icon-plus {
+  position: 'absolute';
+  top: '50%';
+  left: '45%';
+}
+
+.icon-plus:hover {
+  cursor: pointer;
+}
