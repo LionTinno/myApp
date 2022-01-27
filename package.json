@@ -8,7 +8,7 @@
     "start": "react-native start",
     "web": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test", 
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "dependencies": {
@@ -21,6 +21,7 @@
     "cardon": "^1.0.2",
     "chart.js": "^3.7.0",
     "chartjs-plugin-datalabels": "^2.0.0",
+    "deps-install": "^0.2.2",
     "faker": "^5.5.3",
     "react": "17.0.2",
     "react-bootstrap": "^2.0.4",
